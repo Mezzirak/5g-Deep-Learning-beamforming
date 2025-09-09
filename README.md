@@ -12,6 +12,8 @@ The core objective is to mitigate two primary forms of interference in modern wi
 
 The simulation will compare the effectiveness of a classical Digital Signal Processing (DSP) algorithm (MVDR) against a deep learning approach in maximising the Signal-to-Interference-plus-Noise Ratio (SINR) for a desired user.
 
+**BACKGROUND THEORY**
+
 If you have one base station (known as a gNB in 5G terminology) and multiple users (User Equipment or UEs). The gNB has an array of antennas, which is what allows it to perform beamforming. The signal received by the gNB's antenna array is a superposition of the signals from all users, plus noise. 
 
 The project simulates a multi-user wireless environment. The signal, y(t), received by the base station's multi-antenna array is modelled as a linear combination of signals from all active users, corrupted by additive noise.
