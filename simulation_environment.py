@@ -128,3 +128,19 @@ for angle in np.rad2deg(angles_of_arrival):
     plt.axvline(x=angle, color='r', linestyle='--')
 plt.ylim(-50, 5)
 plt.show()
+
+#Preparing the data for the Deep Learning Model
+
+# INPUT (X): The noisy received signal at the antennas
+#Splitting the complex numbers into real and imaginary parts
+# The shape of received_signal_with_noise is (NUM_ANTENNAS, NUM_SYMBOLS)
+#Want the shape to be (NUM_SYMBOLS, NUM_ANTENNAS * 2)
+X_complex = received_signal_with_noise.T # Shape (NUM_SYMBOLS, NUM_ANTENNAS)
+X_train = np.hstack([np.real(X_complex), np.imag(X_complex)])
+
+# OUTPUT (Y): The original, clean symbols for the desired user
+Y_complex = transmitted_symbols[desired_user_idx, :].T # Shape (NUM_SYMBOLS)
+Y_train = np.column_stack([np.real(Y_complex), np.imag(Y_complex)])
+
+print(f"Shape of training input (X_train): {X_train.shape}")
+print(f"Shape of training output (Y_train): {Y_train.shape}")
