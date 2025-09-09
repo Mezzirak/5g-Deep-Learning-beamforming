@@ -24,6 +24,13 @@ $$
 \mathbf{y}(t) = \sum_{k=1}^{K} \mathbf{h}_k s_k(t) + \mathbf{n}(t)
 $$
 
+Where:
+- $K$ is the total number of users.
+- $\mathbf{y}(t)$ is the **received signal vector** at the base station's antenna array.
+- $s_k(t)$ is the **signal transmitted by the k-th user**.
+- $\mathbf{h}_k$ is the **channel vector** that characterises the path (including fading and phase shifts) between the k-th user and the antenna array.
+- $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**.
+
 **Learning resouces**
 
 - Machine Learning for Signal Processing, Max A. Little
