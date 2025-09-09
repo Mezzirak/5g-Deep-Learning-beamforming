@@ -1,5 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Input
 
 #Simulation Parameters
 NUM_ANTENNAS = 16       # Number of antennas at the gNB (M)
@@ -144,3 +147,42 @@ Y_train = np.column_stack([np.real(Y_complex), np.imag(Y_complex)])
 
 print(f"Shape of training input (X_train): {X_train.shape}")
 print(f"Shape of training output (Y_train): {Y_train.shape}")
+
+#Building and Training the Deep Learning Model
+
+#Define the model architecture
+model = Sequential([
+    Input(shape=(NUM_ANTENNAS * 2,)),
+    Dense(128, activation='relu'),
+    Dense(128, activation='relu'),
+    Dense(2, activation='linear') # Output layer has 2 neurons for real and imag parts
+])
+
+#Compile the model
+#Using the Mean Squared Error as the loss function because this is a regression problem
+#The Adam optimiser is a standard and effective choice
+model.compile(optimizer='adam', loss='mse')
+model.summary()
+
+#Train the model
+print("\nTraining the Deep Learning model:")
+# validation_split=0.2 means 20% of the data is set aside for validation
+history = model.fit(X_train, Y_train, epochs=50, batch_size=32, validation_split=0.2, verbose=1)
+
+#Evaluate the DL Model
+#Use the trained model to make predictions on the training data
+predicted_symbols_dl_split = model.predict(X_train)
+#Combine real and imaginary parts back into a complex number
+predicted_symbols_dl = predicted_symbols_dl_split[:, 0] + 1j * predicted_symbols_dl_split[:, 1]
+
+#Plot the constellation diagram for the DL model output
+plt.figure(figsize=(8, 8))
+plt.scatter(np.real(predicted_symbols_dl), np.imag(predicted_symbols_dl), alpha=0.5, label='DL Estimated Symbols')
+plt.scatter(np.real(original_desired_symbols), np.imag(original_desired_symbols), c='red', marker='x', s=100, label='Original BPSK Symbols')
+plt.title('Constellation Diagram after Deep Learning Beamforming')
+plt.xlabel('In-Phase (I)')
+plt.ylabel('Quadrature (Q)')
+plt.grid(True)
+plt.legend()
+plt.axis('equal')
+plt.show()
