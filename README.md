@@ -31,6 +31,18 @@ Where:
 - $\mathbf{h}_k$ is the **channel vector** that characterises the path (including fading and phase shifts) between the k-th user and the antenna array
 - $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**
 
+**Project Sturcture**
+
+main.py: Runs the complete project pipeline, from data generation to final evaluation.
+
+simulation.py: Generates the 5G multi-user signal data and simulates the wireless channel.
+
+models.py: Defines the architectures for both the classical MVDR beamformer and the deep learning model.
+
+evaluate.py: Contains functions to calculate key performance metrics like Bit Error Rate (BER).
+
+plotting.py: Includes all functions for creating visualisations, such as constellation and beam pattern plots.
+
 **Learning resouces**
 
 - Machine Learning for Signal Processing, Max A. Little
