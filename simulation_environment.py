@@ -65,3 +65,66 @@ plt.legend()
 plt.grid(True)
 plt.axis('equal')
 plt.show()
+
+#MVDR Beamforming Implementation
+
+#Using the signal and channel data from the previous steps
+
+#First, I am calculating the Covariance Matrix (R)
+# the received_signal_with_noise has shape (NUM_ANTENNAS, NUM_SYMBOLS)
+#Need to transpose it to (NUM_SYMBOLS, NUM_ANTENNAS) for the calculation
+Y = received_signal_with_noise.T 
+# The covariance matrix R is (Y^H * Y) / N_symbols
+R = (Y.conj().T @ Y) / NUM_SYMBOLS
+
+# 2. Calculate the MVDR Weights (w)
+# Get the steering vector for the desired user
+a_d = channel_vectors[desired_user_idx, :]
+
+# Calculate the inverse of the covariance matrix
+R_inv = np.linalg.inv(R)
+
+# Numerator of the MVDR formula
+numerator = R_inv @ a_d
+# Denominator of the MVDR formula
+denominator = a_d.conj().T @ R_inv @ a_d
+
+# Final MVDR weights
+w_mvdr = numerator / denominator
+
+# 3. Apply the Beamforming Weights
+# w_mvdr has shape (NUM_ANTENNAS,)
+# received_signal_with_noise has shape (NUM_ANTENNAS, NUM_SYMBOLS)
+# We need w_mvdr^H * y(t) for each symbol
+estimated_symbols = w_mvdr.conj().T @ received_signal_with_noise
+
+#Visualise the Result
+# Plot the transmitted vs. estimated symbols (constellation diagram)
+plt.figure(figsize=(8, 8))
+plt.scatter(np.real(estimated_symbols), np.imag(estimated_symbols), alpha=0.5, label='Estimated Symbols')
+# Plot the original transmitted symbols for the desired user
+original_desired_symbols = transmitted_symbols[desired_user_idx, :]
+plt.scatter(np.real(original_desired_symbols), np.imag(original_desired_symbols), c='red', marker='x', s=100, label='Original BPSK Symbols')
+plt.title('Constellation Diagram after MVDR Beamforming')
+plt.xlabel('In-Phase (I)')
+plt.ylabel('Quadrature (Q)')
+plt.grid(True)
+plt.legend()
+plt.axis('equal')
+plt.show()
+
+#visualise the beam pattern
+plt.figure()
+angles = np.linspace(-np.pi/2, np.pi/2, 360)
+steering_vectors_scan = np.exp(-1j * np.pi * np.sin(angles[:, np.newaxis]) * antenna_indices)
+beam_pattern = np.abs(steering_vectors_scan @ w_mvdr.conj())**2
+
+plt.plot(np.rad2deg(angles), 10 * np.log10(beam_pattern))
+plt.title('MVDR Beam Pattern')
+plt.xlabel('Angle (degrees)')
+plt.ylabel('Gain (dB)')
+plt.grid(True)
+for angle in np.rad2deg(angles_of_arrival):
+    plt.axvline(x=angle, color='r', linestyle='--')
+plt.ylim(-50, 5)
+plt.show()
