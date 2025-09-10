@@ -26,17 +26,17 @@ $$
 $$
 
 Where:
-- $K$ is the total number of users.
-- $\mathbf{y}(t)$ is the **received signal vector**.
-- $s_k(t)$ is the **signal transmitted by the k-th user**.
-- $\mathbf{h}_k$ is the **channel vector** for the k-th user. This vector represents the unique spatial signature of the user's signal path to the antenna array.
-- $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**.
+- $K$ is the total number of users
+- $\mathbf{y}(t)$ is the **received signal vector**
+- $s_k(t)$ is the **signal transmitted by the k-th user**
+- $\mathbf{h}_k$ is the **channel vector** for the k-th user. This vector represents the unique spatial signature of the user's signal path to the antenna array
+- $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**
 
-The goal of the beamformer is to process $\mathbf{y}(t)$ to recover an accurate estimate of the desired signal, $s_d(t)$.
+The goal of the beamformer is to process $\mathbf{y}(t)$ to recover an accurate estimate of the desired signal, $s_d(t)$
 
 ### The MVDR Beamformer: A Classical Solution
 
-The Minimum Variance Distortionless Response (MVDR) beamformer is a widely used algorithm for this task. It calculates an optimal set of weights, $\mathbf{w}$, for the antenna array to minimise the power from interference and noise while maintaining a distortionless response (a gain of 1) in the direction of the desired user.
+The Minimum Variance Distortionless Response (MVDR) beamformer is a widely used algorithm for this task. It calculates an optimal set of weights, $\mathbf{w}$, for the antenna array to minimise the power from interference and noise while maintaining a distortionless response (a gain of 1) in the direction of the desired user
 
 The formula for the MVDR weights is:
 
@@ -44,19 +44,19 @@ $$
 \mathbf{w}_{\text{mvdr}} = \frac{\mathbf{R}^{-1}\mathbf{a}(\theta_d)}{\mathbf{a}(\theta_d)^H \mathbf{R}^{-1}\mathbf{a}(\theta_d)}
 $$
 
-Where $\mathbf{R}$ is the covariance matrix of the received signal and $\mathbf{a}(\theta_d)$ is the steering vector of the desired user. This project uses the MVDR beamformer as the classical benchmark against which a novel deep learning approach is compared.
+Where $\mathbf{R}$ is the covariance matrix of the received signal and $\mathbf{a}(\theta_d)$ is the steering vector of the desired user. This project uses the MVDR beamformer as the classical benchmark against which a novel deep learning approach is compared
 
 **Project Sturcture**
 
-main.py: Runs the complete project pipeline, from data generation to final evaluation.
+main.py: Runs the complete project pipeline, from data generation to final evaluation
 
-simulation.py: Generates the 5G multi-user signal data and simulates the wireless channel.
+simulation.py: Generates the 5G multi-user signal data and simulates the wireless channel
 
-models.py: Defines the architectures for both the classical MVDR beamformer and the deep learning model.
+models.py: Defines the architectures for both the classical MVDR beamformer and the deep learning model
 
-evaluate.py: Contains functions to calculate key performance metrics like Bit Error Rate (BER).
+evaluate.py: Contains functions to calculate key performance metrics like Bit Error Rate (BER)
 
-plotting.py: Includes all functions for creating visualisations, such as constellation and beam pattern plots.
+plotting.py: Includes all functions for creating visualisations, such as constellation and beam pattern plots
 
 **Learning resouces**
 
