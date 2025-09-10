@@ -1,9 +1,6 @@
 # 5g-beamforming-project
 
-JUST STARTED 09-09-2025, SO THIS IS AT THE ABSOLUTE BEGINNING RIGHT NOW
-ALL OF BELOW IS WHAT IS I HOPE TO EXECUTE IN THIS PROJECT - NOT WHAT IS ALREADY DONE.
-
-I am intending for this project to one day to design, simulate and evaluate a deep learning-based beamformer for adaptive noise cancellation in a 5G multi-user wireless environment. The performance of the neural network model will be benchmarked against a classical Minimum Variance Distortionless Response (MVDR) beamformer.
+This project is in progress and will design, simulate and evaluate a deep learning-based beamformer for adaptive noise cancellation in a 5G multi-user wireless environment. The performance of the neural network model will be benchmarked against a classical Minimum Variance Distortionless Response (MVDR) beamformer.
 
 The core objective is to mitigate two primary forms of interference in modern wireless communications:
 
@@ -12,24 +9,42 @@ The core objective is to mitigate two primary forms of interference in modern wi
 
 The simulation will compare the effectiveness of a classical Digital Signal Processing (DSP) algorithm (MVDR) against a deep learning approach in maximising the Signal-to-Interference-plus-Noise Ratio (SINR) for a desired user.
 
-**BACKGROUND THEORY**
+## Background Theory
 
-If you have one base station (known as a gNB in 5G terminology) and multiple users (User Equipment or UEs). The gNB has an array of antennas, which is what allows it to perform beamforming. The signal received by the gNB's antenna array is a superposition of the signals from all users, plus noise. 
+### The Challenge of Multi-User Interference
 
-The project simulates a multi-user wireless environment. The signal, y(t), received by the base station's multi-antenna array is modelled as a linear combination of signals from all active users, corrupted by additive noise.
+In modern 5G wireless systems, a single base station (gNB) must communicate simultaneously with multiple user devices (UEs). The gNB uses an array of antennas, but the signal that arrives is a mixture of signals from all users, corrupted by electronic noise. This creates a significant challenge: isolating the signal of one desired user from the interference of others.
 
-The mathematical model is represented as:
+The solution is **adaptive beamforming**, a technique where the antenna array intelligently combines its received signals to form a highly focused "beam" towards a desired user. This enhances their signal while actively suppressing interference from other directions.
+
+### The System Signal Model
+
+To design a beamformer, we first model the received signal vector, $\mathbf{y}(t)$, at the gNB's antenna array as:
 
 $$
-\mathbf{y}(t) = \sum_{k=1}^{K} \mathbf{h}_k s_k(t) + \mathbf{n}(t)
+\mathbf{y}(t) = \underbrace{\mathbf{h}_d s_d(t)}_{\text{Desired Signal}} + \underbrace{\sum_{k \neq d}^{K} \mathbf{h}_k s_k(t)}_{\text{Inter-User Interference}} + \underbrace{\mathbf{n}(t)}_{\text{Noise}}
 $$
 
 Where:
-- $K$ is the total number of users
-- $\mathbf{y}(t)$ is the **received signal vector** at the base station's antenna array
-- $s_k(t)$ is the **signal transmitted by the k-th user**
-- $\mathbf{h}_k$ is the **channel vector** that characterises the path (including fading and phase shifts) between the k-th user and the antenna array
-- $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**
+- $K$ is the total number of users.
+- $\mathbf{y}(t)$ is the **received signal vector**.
+- $s_k(t)$ is the **signal transmitted by the k-th user**.
+- $\mathbf{h}_k$ is the **channel vector** for the k-th user. This vector represents the unique spatial signature of the user's signal path to the antenna array.
+- $\mathbf{n}(t)$ is the **Additive White Gaussian Noise (AWGN) vector**.
+
+The goal of the beamformer is to process $\mathbf{y}(t)$ to recover an accurate estimate of the desired signal, $s_d(t)$.
+
+### The MVDR Beamformer: A Classical Solution
+
+The Minimum Variance Distortionless Response (MVDR) beamformer is a widely used algorithm for this task. It calculates an optimal set of weights, $\mathbf{w}$, for the antenna array to minimise the power from interference and noise while maintaining a distortionless response (a gain of 1) in the direction of the desired user.
+
+The formula for the MVDR weights is:
+
+$$
+\mathbf{w}_{\text{mvdr}} = \frac{\mathbf{R}^{-1}\mathbf{a}(\theta_d)}{\mathbf{a}(\theta_d)^H \mathbf{R}^{-1}\mathbf{a}(\theta_d)}
+$$
+
+Where $\mathbf{R}$ is the covariance matrix of the received signal and $\mathbf{a}(\theta_d)$ is the steering vector of the desired user. This project uses the MVDR beamformer as the classical benchmark against which a novel deep learning approach is compared.
 
 **Project Sturcture**
 
