@@ -46,6 +46,16 @@ $$
 
 Where $\mathbf{R}$ is the covariance matrix of the received signal and $\mathbf{a}(\theta_d)$ is the steering vector of the desired user. This project uses the MVDR beamformer as the classical benchmark against which a novel deep learning approach is compared
 
+### A Deep Learning Approach to Beamforming
+
+While the MVDR algorithm provides an optimal solution under specific statistical assumptions, its performance can degrade in complex scenarios where these assumptions do not perfectly hold. An alternative is to treat the beamformer as a "black box" and use a **deep neural network (DNN)** to learn the complex mapping from the received noisy signal to the clean, desired signal.
+
+The core idea is to frame beamforming as a **supervised learning problem**:
+- **Input:** The raw, complex signal vector received at the antenna array, $\mathbf{y}(t)$.
+- **Output:** The original, clean symbol transmitted by the desired user, $s_d(t)$.
+
+The DNN learns to approximate the ideal function that performs this mapping. Through **training**, the model is shown thousands of examples and iteratively adjusts its internal parameters to minimise the error between its predictions and the true symbols. This data-driven approach allows the model to potentially learn to mitigate impairments that are difficult to model analytically, offering a powerful alternative to classical methods.
+
 **Project Sturcture**
 
 main.py: Runs the complete project pipeline, from data generation to final evaluation
