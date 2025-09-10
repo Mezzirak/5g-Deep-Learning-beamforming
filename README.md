@@ -13,9 +13,9 @@ The simulation will compare the effectiveness of a classical Digital Signal Proc
 
 ### The Challenge of Multi-User Interference
 
-In modern 5G wireless systems, a single base station (gNB) must communicate simultaneously with multiple user devices (UEs). The gNB uses an array of antennas, but the signal that arrives is a mixture of signals from all users, corrupted by electronic noise. This creates a significant challenge: isolating the signal of one desired user from the interference of others.
+In modern 5G wireless systems, a single base station (gNB) must communicate simultaneously with multiple user devices (UEs). The gNB uses an array of antennas to receive signals, but the signal that arrives at this array is a superposition, a mixture of the signals from all users, corrupted by inherent electronic noise. This creates a significant challenge: how to isolate the weak signal of one desired user from the overwhelming interference of all other users transmitting at the same time.
 
-The solution is **adaptive beamforming**, a technique where the antenna array intelligently combines its received signals to form a highly focused "beam" towards a desired user. This enhances their signal while actively suppressing interference from other directions.
+The solution is adaptive beamforming, a signal processing technique that allows the antenna array to "listen" in a specific direction. By intelligently combining the signals received at each antenna, the gNB can form a highly focused beam towards the desired user, enhancing their signal while simultaneously suppressing interfering signals from other directions.
 
 ### The System Signal Model
 
