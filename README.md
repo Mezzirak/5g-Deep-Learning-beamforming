@@ -48,23 +48,41 @@ Where $\mathbf{R}$ is the covariance matrix of the received signal and $\mathbf{
 
 ### A Deep Learning Approach to Beamforming
 
-While the MVDR algorithm provides an optimal solution under specific statistical assumptions, its performance can degrade in complex scenarios where these assumptions do not perfectly hold. An alternative is to treat the beamformer as a "black box" and use a **deep neural network (DNN)** to learn the complex mapping from the received noisy signal to the clean, desired signal.
+While the MVDR algorithm provides an optimal solution under specific statistical assumptions, its performance can degrade in complex scenarios where these assumptions do not perfectly hold. An alternative is to treat the beamformer as a "black box" and use a **deep neural network (DNN)** to learn the complex mapping from the received noisy signal to the clean, desired signal
 
 The core idea is to frame beamforming as a **supervised learning problem**:
-- **Input:** The raw, complex signal vector received at the antenna array, $\mathbf{y}(t)$.
-- **Output:** The original, clean symbol transmitted by the desired user, $s_d(t)$.
+- **Input:** The raw, complex signal vector received at the antenna array, $\mathbf{y}(t)$
+- **Output:** The original, clean symbol transmitted by the desired user, $s_d(t)$
 
-The DNN learns to approximate the ideal function that performs this mapping. Through **training**, the model is shown thousands of examples and iteratively adjusts its internal parameters to minimise the error between its predictions and the true symbols. This data-driven approach allows the model to potentially learn to mitigate impairments that are difficult to model analytically, offering a powerful alternative to classical methods.
+The DNN learns to approximate the ideal function that performs this mapping. Through **training**, the model is shown thousands of examples and iteratively adjusts its internal parameters to minimise the error between its predictions and the true symbols. This data-driven approach allows the model to potentially learn to mitigate impairments that are difficult to model analytically, offering a powerful alternative to classical methods
 
 ### Performance Metric: Bit Error Rate (BER)
 
-**Bit Error Rate (BER)** is a fundamental performance metric in digital communications that measures the frequency of errors in a data transmission. It is defined as the ratio of the number of bits that are incorrectly received to the total number of bits transmitted.
+**Bit Error Rate (BER)** is a fundamental performance metric in digital communications that measures the frequency of errors in a data transmission. It is defined as the ratio of the number of bits that are incorrectly received to the total number of bits transmitted
 
 $$
 \text{BER} = \frac{\text{Number of Bit Errors}}{\text{Total Number of Transmitted Bits}}
 $$
 
-A lower BER indicates a more reliable, higher-quality communication link. For example, a BER of $10^{-5}$ means that, on average, one bit is incorrect for every 100,000 bits sent. In this project, BER is the primary metric used to compare the effectiveness of the MVDR and deep learning beamformers in recovering the original, error-free signal from the noisy, interfered environment.
+A lower BER indicates a more reliable, higher-quality communication link. For example, a BER of $10^{-5}$ means that, on average, one bit is incorrect for every 100,000 bits sent. In this project, BER is the primary metric used to compare the effectiveness of the MVDR and deep learning beamformers in recovering the original, error-free signal from the noisy, interfered environment
+
+### Performance Metric: Signal-to-Interference-plus-Noise Ratio (SINR)
+
+The **Signal-to-Interference-plus-Noise Ratio (SINR)** is another key performance metric that measures the quality of a received signal. It is defined as the ratio of the power of the desired signal to the combined power of all interference and noise. A higher SINR value, typically measured in decibels (dB), corresponds to a better quality signal
+
+The output SINR for a beamformer with a weight vector $\mathbf{w}$ is calculated by separating the power of the desired signal, the interference, and the noise:
+
+- **Desired Signal Power:** $P_S = |\mathbf{w}^H \mathbf{h}_d|^2$
+- **Interference Power:** $P_I = \sum_{k \neq d} |\mathbf{w}^H \mathbf{h}_k|^2$
+- **Noise Power:** $P_N = \sigma^2 ||\mathbf{w}||^2$
+
+The SINR is the ratio of these components:
+
+$$
+\text{SINR} = \frac{P_S}{P_I + P_N}
+$$
+
+While BER measures the final outcome (errors), SINR provides insight into the quality of the signal at the immediate output of the beamformer before the final bits are decoded.
 
 ### Project Sturcture
 
