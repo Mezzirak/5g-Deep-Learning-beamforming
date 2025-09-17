@@ -131,4 +131,5 @@ This project provides a strong foundation for comparing classical and deep learn
 - A Brief Introduction to Machine Learning for Engineers by O. Simeone (Foundations and Trends in Signal Processing, 2018)
 - Deep Learning by Goodfellow, Bengio & Courville (2016)
 - Reinforcement Learning: An Introduction by Sutton & Barto (2018 ed.)
+- Tse & Viswanath – Fundamentals of Wireless Communication
 - Pattern Recognition and Machine Learning by Bishop (2006)
