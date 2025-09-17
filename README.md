@@ -56,6 +56,16 @@ The core idea is to frame beamforming as a **supervised learning problem**:
 
 The DNN learns to approximate the ideal function that performs this mapping. Through **training**, the model is shown thousands of examples and iteratively adjusts its internal parameters to minimise the error between its predictions and the true symbols. This data-driven approach allows the model to potentially learn to mitigate impairments that are difficult to model analytically, offering a powerful alternative to classical methods.
 
+### Performance Metric: Bit Error Rate (BER)
+
+**Bit Error Rate (BER)** is a fundamental performance metric in digital communications that measures the frequency of errors in a data transmission. It is defined as the ratio of the number of bits that are incorrectly received to the total number of bits transmitted.
+
+$$
+\text{BER} = \frac{\text{Number of Bit Errors}}{\text{Total Number of Transmitted Bits}}
+$$
+
+A lower BER indicates a more reliable, higher-quality communication link. For example, a BER of $10^{-5}$ means that, on average, one bit is incorrect for every 100,000 bits sent. In this project, BER is the primary metric used to compare the effectiveness of the MVDR and deep learning beamformers in recovering the original, error-free signal from the noisy, interfered environment.
+
 **Project Sturcture**
 
 main.py: Runs the complete project pipeline, from data generation to final evaluation
@@ -67,6 +77,14 @@ models.py: Defines the architectures for both the classical MVDR beamformer and 
 evaluate.py: Contains functions to calculate key performance metrics like Bit Error Rate (BER)
 
 plotting.py: Includes all functions for creating visualisations, such as constellation and beam pattern plots
+
+**Results and analysis**
+
+The performance of the classical MVDR beamformer and the proposed deep learning (DL) model was evaluated across a range of Signal-to-Noise Ratios (SNRs) from -10 dB to +10 dB. The simulation was configured with a 16-antenna array and 8 active users to create a challenging interference environment. The resulting Bit Error Rate (BER) for each model is presented in the figure below.
+
+![BER vs SNR Performance Comparison](images/ber_vs_snr_comparison.png)
+
+
 
 **Learning resouces**
 
