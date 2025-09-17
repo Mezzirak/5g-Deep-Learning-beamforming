@@ -112,6 +112,17 @@ Overall Trend: Both models exhibit the expected "waterfall" characteristic, with
 
 In conclusion, the data-driven approach of the deep learning model proves to be a more effective and robust solution for adaptive beamforming in the simulated high-interference 5G scenario.
 
+## Future Work
+
+This project provides a strong foundation for comparing classical and deep learning-based beamforming. Future work could expand upon this in several key areas to further enhance the simulation's realism and the model's performance:
+
+- **Advanced Channel Models:** Incorporate more complex and realistic channel models beyond the current Line-of-Sight (LoS) simulation, such as Rayleigh or Rician fading, to better represent non-line-of-sight (NLoS) conditions common in urban environments.
+
+- **Hyperparameter Optimisation:** Conduct a systematic hyperparameter tuning process for the deep learning model—exploring different optimisers, learning rates, batch sizes, and network architectures (e.g., adding more layers or neurons)—to maximise its performance.
+
+- **Alternative Network Architectures:** Investigate the effectiveness of other neural network architectures that may be better suited for signal processing tasks, such as Convolutional Neural Networks (CNNs) for spatial feature extraction or Complex-Valued Neural Networks that can handle complex numbers natively.
+
+- **Expanded Baselines:** Compare the deep learning model against a wider array of classical beamforming algorithms, such as Zero-Forcing (ZF) or Linear Minimum Mean Square Error (LMMSE), to provide a broader context for its performance.
 
 **Learning resouces**
 
