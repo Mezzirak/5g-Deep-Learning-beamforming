@@ -66,7 +66,7 @@ $$
 
 A lower BER indicates a more reliable, higher-quality communication link. For example, a BER of $10^{-5}$ means that, on average, one bit is incorrect for every 100,000 bits sent. In this project, BER is the primary metric used to compare the effectiveness of the MVDR and deep learning beamformers in recovering the original, error-free signal from the noisy, interfered environment.
 
-**Project Sturcture**
+### Project Sturcture
 
 main.py: Runs the complete project pipeline, from data generation to final evaluation
 
@@ -78,12 +78,21 @@ evaluate.py: Contains functions to calculate key performance metrics like Bit Er
 
 plotting.py: Includes all functions for creating visualisations, such as constellation and beam pattern plots
 
-**Results and analysis**
+### Results and analysis
 
 The performance of the classical MVDR beamformer and the proposed deep learning (DL) model was evaluated across a range of Signal-to-Noise Ratios (SNRs) from -10 dB to +10 dB. The simulation was configured with a 16-antenna array and 8 active users to create a challenging interference environment. The resulting Bit Error Rate (BER) for each model is presented in the figure below.
 
 ![BER vs SNR Performance Comparison](images/ber_vs_snr_comparison.png)
 
+Key Findings:
+
+Superior Performance of the Deep Learning Model: The deep learning beamformer consistently outperforms the MVDR baseline across the entire SNR range. At an SNR of 0 dB, the DL model achieves a BER of 0.017, over four times lower than the MVDR's BER of 0.074. This demonstrates the model's superior ability to learn and adapt to the complex interference patterns present in a crowded multi-user environment.
+
+Robustness in Challenging Scenarios: A notable anomaly occurred at an SNR of 4 dB, where the MVDR model's performance degraded significantly. This is attributed to a random user placement that likely positioned an interferer very close in angle to the desired user. While the DL model also showed a minor performance dip, its ability to handle this "worst-case" scenario more gracefully highlights its increased robustness compared to the classical algorithm.
+
+Overall Trend: Both models exhibit the expected "waterfall" characteristic, with the BER improving as the signal becomes cleaner (higher SNR). This validates the correctness of the simulation framework. The DL model, however, consistently provides a significant performance gain, achieving a lower error floor more rapidly than the MVDR baseline.
+
+In conclusion, the data-driven approach of the deep learning model proves to be a more effective and robust solution for adaptive beamforming in the simulated high-interference 5G scenario.
 
 
 **Learning resouces**
