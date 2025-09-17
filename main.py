@@ -7,17 +7,17 @@ from evaluate import calculate_ber, calculate_sinr
 
 # Simulation Setup
 NUM_ANTENNAS = 16
-NUM_USERS = 3
-NUM_SYMBOLS = 10000 # Use more symbols for more accurate BER
+NUM_USERS = 10
+NUM_SYMBOLS = 100000 #symbols for more BER
 
 # Define the range of SNR values to test
-snr_range_db = np.arange(0, 22, 2) # From 0dB to 20dB in steps of 2dB
+snr_range_db = np.arange(-10, 12, 2) #SNR range
 mvdr_ber_results = []
 dl_ber_results = []
 
 # Main Experiment Loop
 for snr_db in snr_range_db:
-    print(f"\n--- Running simulation for SNR = {snr_db} dB")
+    print(f"\nRunning simulation for SNR = {snr_db} dB")
     
     # Generate new data for each SNR point
     sim_data = generate_simulation_data(NUM_ANTENNAS, NUM_USERS, snr_db, NUM_SYMBOLS)
