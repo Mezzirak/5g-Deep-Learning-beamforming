@@ -102,28 +102,28 @@ The performance of the classical Minimum Variance Distortionless Response (MVDR)
 
 ![BER vs SNR Performance Comparison](images/ber_vs_snr_comparison.png)
 
-# Key Findings:
+## Key Findings:
 
 A detailed analysis of the graph reveals a nuanced performance trade-off between the two models, rather than one consistently outperforming the other. The results are best understood by examining different SNR regions.
 
-# Low to Mid-SNR Performance (-10 dB to 7.5 dB):
+## Low to Mid-SNR Performance (-10 dB to 7.5 dB):
 
 In this range, the deep learning model demonstrates a clear and significant performance advantage. For example, at an SNR of 0 dB, the DL model achieves a BER of approximately 0.013, which is roughly five times lower than the MVDR's BER of approximately 0.065. This suggests the DL model is more effective at learning and mitigating complex interference patterns in noisy conditions.
 
-# High-SNR Performance Anomaly (at 10 dB):
+## High-SNR Performance Anomaly (at 10 dB):
 
 The trend reverses dramatically at an SNR of 10 dB. The DL model's performance collapses, with its BER degrading sharply to approximately 0.28. In contrast, the MVDR beamformer's performance continues to improve, achieving a BER of about 0.012. This result is a critical finding, as it highlights a significant flaw in the DL model's robustness in low-noise environments. Such behaviour is theoretically unexpected and points towards potential issues like model overfitting, numerical instability, or implementation problems.
 
-# Consistent Performance Trends:
+## Consistent Performance Trends:
 
 Both models generally follow the expected "waterfall" characteristic, with BER improving as SNR increases from -10 dB to 7.5 dB. The most dramatic performance difference occurs in the mid-SNR range (around 0 dB), where the DL model shows its strongest advantage. At very high performance levels (7.5 dB), both algorithms achieve similar, excellent BER performance of approximately 10^-5.
 
-# Conclusion:
+## Conclusion:
 
 The analysis indicates that the proposed deep learning model is not a universally superior solution but rather one with distinct strengths and critical weaknesses. While it shows great promise and outperforms the classical MVDR beamformer in low-to-moderate SNR conditions (up to 7.5 dB), its catastrophic failure at high SNR (10 dB) is a major concern that undermines its practical viability.
 This suggests that the data-driven approach is effective at navigating complex interference in noisy environments but, in its current implementation, lacks the robustness and predictability of the classical MVDR algorithm in cleaner signal conditions. The results invalidate any claim of consistent superiority and suggest that the DL model, while promising in certain operating conditions, requires significant further development to be considered a reliable alternative.
 
-# Critical Issues Requiring Investigation:
+## Critical Issues Requiring Investigation:
 
 - Root cause analysis of the 10 dB performance collapse
 - Model validation and overfitting assessment
