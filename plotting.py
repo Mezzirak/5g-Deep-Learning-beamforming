@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 def plot_constellation(estimated, original, title):
     plt.figure(figsize=(8, 8))
-    plt.scatter(np.real(estimated), np.imag(estimated), alpha=0.5, label='Estimated Symbols')
-    plt.scatter(np.real(original), np.imag(original), c='red', marker='x', s=100, label='Original Symbols')
+    plt.scatter(np.real(estimated), np.imag(estimated), alpha=0.5, label='Estimated symbols')
+    plt.scatter(np.real(original), np.imag(original), c='red', marker='x', s=100, label='Original symbols')
     plt.title(title)
     plt.xlabel('In-Phase (I)'); plt.ylabel('Quadrature (Q)')
     plt.grid(True); plt.legend(); plt.axis('equal'); plt.show()
