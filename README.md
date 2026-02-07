@@ -98,43 +98,7 @@ plotting.py: Includes all functions for creating visualisations, such as constel
 
 ### Results and analysis
 
-The performance of the classical Minimum Variance Distortionless Response (MVDR) beamformer and the proposed deep learning (DL) model was evaluated across a range of Signal-to-Noise Ratios (SNRs), from -10 dB to 10 dB. The simulation was configured with a 16-antenna array and 8 active users to create a challenging interference environment. The resulting Bit Error Rate (BER) for each model is presented in the figure below.
-
-![BER vs SNR Performance Comparison](images/ber_vs_snr_comparison.png)
-
-## Key Findings:
-
-The results demonstrate that the proposed Deep Learning (DL) beamformer consistently and significantly outperforms the classical Minimum Variance Distortionless Response (MVDR) benchmark across nearly the entire tested Signal-to-Noise Ratio (SNR) range. The DL model proves to be a more robust and effective solution for interference mitigation in this simulated environment, challenging the notion of a simple performance trade-off.
-
-## Low to Mid-SNR performance (-10 dB to 7.5 dB):
-
-In this range, the DL model establishes a clear and growing performance advantage. While both algorithms perform similarly in the extremely noisy -10 dB condition, the DL model's superiority becomes evident as SNR improves. For instance, at an SNR of 0 dB, the DL model achieves a Bit Error Rate (BER) of approximately 0.013, which is five times lower than the MVDR's BER of roughly 0.065. This highlights the DL model's enhanced ability to mitigate interference even in noisy conditions.
-
-## Peak performance and maximum advantage (at 7.5 dB):
-
-The most dramatic difference between the two models occurs at an SNR of 7.5 dB. Here, the DL model reaches its peak performance, with its BER approaching the measurement floor of 10^−5. In stark contrast, the MVDR beamformer's BER is approximately 3×10^−2. This constitutes the largest performance gap, with the DL model outperforming the MVDR benchmark by a factor of approximately 3,000.
-
-## Overall trends and high-SNR anomaly:
-
-Neither model follows the smooth "waterfall" curve typical of ideal simulations; both plots are erratic and jagged, likely due to insufficient simulation time for statistical convergence. This is particularly evident in the MVDR curve's sharp performance degradation at 5 dB.
-
-An anomaly is visible in the DL model's curve at 10 dB, where its BER degrades slightly to ~1.2×10^−2 from its peak at 7.5 dB. While this behaviour is unexpected and warrants investigation, the DL model's performance at 10 dB remains vastly superior to the MVDR beamformer, which records a very poor BER of ~0.28 at the same point.
-
-## Conclusion:
-
-The analysis conclusively shows that the deep learning model is a superior solution to the classical MVDR beamformer within the context of this simulation. The DL model not only excels in low-to-moderate SNR conditions but also demonstrates an enormous performance advantage in the high-SNR regime.
-
-The minor degradation in the DL model's performance at 10 dB does not undermine its overall viability but rather points to areas for further refinement, such as model regularisation. The primary issue highlighted by the data is the erratic nature of both curves, which strongly suggests the need for more extensive simulations. The results validate the claim that the data-driven DL approach is a powerful and highly promising alternative to classical beamforming methods.
-
-## Critical Issues Requiring Investigation:
-
-- Statistical Convergence: The most critical issue is the need to re-run the simulations for a significantly longer duration to produce smooth, statistically reliable BER curves.
-
-- DL Model Anomaly: Investigate the cause of the minor performance degradation in the DL model between 7.5 dB and 10 dB, focusing on potential overfitting or numerical stability.
-
-- MVDR Instability: Analyse the cause of the sharp performance collapse of the MVDR beamformer at an SNR of 5 dB.
-
-The current results demonstrate the importance of comprehensive evaluation across the full operational range rather than selective reporting of favorable conditions.
+RESULTS ARE FLAWED AND I AM RUNNING A NEW TRAINING CYCLE WITH AN UPDATED MODEL
 
 ## Future Work
 
