@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 def generate_simulation_data(num_antennas, num_users, snr_db, num_symbols):
     """
@@ -110,7 +111,7 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
     
     print(f"Generating training data across {len(snr_range_db)} SNR points...")
     
-    for snr_db in snr_range_db:
+    for snr_db in tqdm(snr_range_db, desc="Generating Data", unit="SNR"):
         for realisation in range(num_realisations):
             # Generate a new channel realisation (different user positions)
             sim_data = generate_simulation_data(
