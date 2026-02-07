@@ -4,8 +4,9 @@ from simulation_fixed import generate_simulation_data, generate_training_data
 from models_fixed import mvdr_beamformer, create_dl_model, prepare_dl_data
 from plotting import plot_constellation, plot_beam_pattern
 from evaluate import calculate_ber, calculate_sinr
+from tqdm import tqdm  # Progress bars!
 
-# SIMULATION CONFIGURATION
+#simulation configuration
 
 # System parameters
 NUM_ANTENNAS = 16  # Number of antennas at base station
@@ -35,14 +36,14 @@ print(f"  - Antennas: {NUM_ANTENNAS}")
 print(f"  - Users: {NUM_USERS} (1 desired + {NUM_USERS-1} interferers)")
 print(f"  - Training symbols per SNR: {NUM_TRAINING_SYMBOLS_PER_SNR:,}")
 print(f"  - Testing symbols per SNR: {NUM_TEST_SYMBOLS:,}")
-print(f"  - Channel realisations: {NUM_CHANNEL_REALIZATIONS}")
+print(f"  - Channel realizations: {NUM_CHANNEL_REALIZATIONS}")
 print(f"  - Training SNR range: {TRAINING_SNR_RANGE[0]} to {TRAINING_SNR_RANGE[-1]} dB")
 print(f"  - Testing SNR range: {TEST_SNR_RANGE[0]} to {TEST_SNR_RANGE[-1]} dB")
 
-# PHASE 1: generate training data
+#generate training data
 
 print("\n" + "="*80)
-print("PHASE 1: Generating training data")
+print("PHASE 1: Generating Training Data")
 print("="*80)
 
 X_train, Y_train = generate_training_data(
@@ -57,29 +58,30 @@ print(f"\nTotal training samples: {len(X_train):,}")
 print(f"Input shape: {X_train.shape}")
 print(f"Output shape: {Y_train.shape}")
 
-# PHASE 2: train the deep learning model
+#train deep learning model
 
 print("\n" + "="*80)
-print("PHASE 2: Training deep learning model")
+print("PHASE 2: Training Deep Learning Model")
 print("="*80)
 
-# Create and train the model once on all training data
+# Create and train the model ONCE on all training data
 dl_model = create_dl_model(
     num_antennas=NUM_ANTENNAS,
     learning_rate=LEARNING_RATE,
     dropout_rate=DROPOUT_RATE
 )
 
-print("\nModel architecture:")
+print("\nModel Architecture:")
 dl_model.summary()
 
-print("\nTraining model (this will take a while)")
+print("\nTraining model")
+print("(validation loss should follow training loss)")
 history = dl_model.fit(
     X_train, Y_train,
     epochs=EPOCHS,
     batch_size=BATCH_SIZE,
     validation_split=0.2,  # Use 20% of data for validation
-    verbose=1
+    verbose=1  # Shows progress bar per epoch
 )
 
 # Plot training history
@@ -106,32 +108,30 @@ plt.grid(True)
 
 plt.tight_layout()
 plt.savefig('images/training_history.png', dpi=150, bbox_inches='tight')
-print("Training complete! Saved training history to images/training_history.png")
+print("\n✓ Training complete! Saved training history to images/training_history.png")
 
-# PHASE 3: EVALUATE ON TEST DATA
+#evaluate on test data
 
 print("\n" + "="*80)
-print("PHASE 3: Evaluating on Test Data")
+print("PHASE 3: Evaluating on test data")
 print("="*80)
+print("This will take ~10-15 minutes (processing 11 million symbols total)")
 
 mvdr_ber_results = []
 dl_ber_results = []
 mvdr_sinr_results = []
 dl_sinr_results = []
 
-# Main experiment loop, test at each SNR point
-for snr_db in TEST_SNR_RANGE:
-    print(f"\n{'='*80}")
-    print(f"Testing at SNR = {snr_db} dB")
-    print(f"{'='*80}")
+# Main experiment loop with progress bar
+for snr_db in tqdm(TEST_SNR_RANGE, desc="Testing SNR points", unit="SNR"):
     
-    # Generate fresh test data
+    # Generate test data
     # Using 1M symbols for statistically valid BER measurements
     sim_data = generate_simulation_data(
         NUM_ANTENNAS, NUM_USERS, snr_db, NUM_TEST_SYMBOLS
     )
     
-    # Unpack the simulation data
+    # Unpack simulation data
     received_signal = sim_data["received_signal"]
     transmitted_symbols = sim_data["transmitted_symbols"]
     channel_vectors = sim_data["channel_vectors"]
@@ -140,7 +140,6 @@ for snr_db in TEST_SNR_RANGE:
     original_desired_symbols = transmitted_symbols[desired_user_idx, :]
     
     # Test the MVDR Beamformer
-    print("\nRunning MVDR beamformer...")
     mvdr_estimated_symbols, mvdr_weights = mvdr_beamformer(
         received_signal, channel_vectors, desired_user_idx
     )
@@ -151,11 +150,7 @@ for snr_db in TEST_SNR_RANGE:
     mvdr_ber_results.append(mvdr_ber)
     mvdr_sinr_results.append(mvdr_sinr)
     
-    print(f"  MVDR BER: {mvdr_ber:.6f}")
-    print(f"  MVDR SINR: {mvdr_sinr:.2f} dB")
-    
-    # Test the deep learning model
-    print("\nRunning DL model")
+    # Test Deep Learning Model
     X_test, Y_test = prepare_dl_data(
         received_signal, transmitted_symbols, desired_user_idx
     )
@@ -167,29 +162,24 @@ for snr_db in TEST_SNR_RANGE:
     dl_ber = calculate_ber(dl_estimated_symbols, original_desired_symbols)
     dl_ber_results.append(dl_ber)
     
-    # For DL, we can't compute traditional SINR since there are no explicit weights
-    # Instead, we'll compute effective SINR from symbol estimates
+    # For DL, compute effective SINR from symbol estimates
     dl_signal_power = np.mean(np.abs(dl_estimated_symbols)**2)
     dl_error_power = np.mean(np.abs(dl_estimated_symbols - original_desired_symbols)**2)
     dl_sinr = 10 * np.log10(dl_signal_power / dl_error_power) if dl_error_power > 0 else 100
     dl_sinr_results.append(dl_sinr)
     
-    print(f"  DL BER: {dl_ber:.6f}")
-    print(f"  DL Effective SINR: {dl_sinr:.2f} dB")
-    
-    # Print comparison
-    improvement_factor = mvdr_ber / dl_ber if dl_ber > 0 else float('inf')
-    print(f"\n  → DL improvement: {improvement_factor:.2f}x better than MVDR")
+    # Update progress bar description with current results
+    tqdm.write(f"  SNR={snr_db:3d} dB | MVDR BER: {mvdr_ber:.6f} | DL BER: {dl_ber:.6f} | Improvement: {mvdr_ber/dl_ber if dl_ber > 0 else float('inf'):.2f}x")
 
-# ============================================================================
-# PHASE 4: PLOT RESULTS
-# ============================================================================
+print("\n✓ Testing complete!")
+
+#plot results
 
 print("\n" + "="*80)
 print("PHASE 4: Generating Plots")
 print("="*80)
 
-# Create comprehensive comparison plot
+# Creating comparison plot
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 # Plot 1: BER vs SNR
@@ -219,10 +209,10 @@ ax2.legend(fontsize=11)
 
 plt.tight_layout()
 plt.savefig('images/ber_vs_snr_comparison_fixed.png', dpi=150, bbox_inches='tight')
-print("Saved comparison plot to images/ber_vs_snr_comparison_fixed.png")
+print("✓ Saved comparison plot to images/ber_vs_snr_comparison_fixed.png")
 
 # Save results to file
-print("\nSaving numerical results...")
+print("\n✓ Saving numerical results to results.npz...")
 np.savez('results.npz',
          snr_range=TEST_SNR_RANGE,
          mvdr_ber=mvdr_ber_results,
@@ -230,10 +220,10 @@ np.savez('results.npz',
          mvdr_sinr=mvdr_sinr_results,
          dl_sinr=dl_sinr_results)
 
-# FINAL SUMMARY
+# summary
 
 print("\n" + "="*80)
-print("EXPERIMENT COMPLETE")
+print("EXPERIMENT COMPLETE - SUMMARY")
 print("="*80)
 
 print("\nFinal BER Results:")
@@ -249,3 +239,4 @@ print("  - images/ber_vs_snr_comparison_fixed.png")
 print("  - images/training_history.png")
 print("  - results.npz")
 print("="*80)
+print("\n🎉 all done")

@@ -41,7 +41,7 @@ def generate_simulation_data(num_antennas, num_users, snr_db, num_symbols):
     # Each symbol is either +1 or -1
     transmitted_symbols = np.random.choice([-1, 1], size=(num_users, num_symbols))
     
-    # Channel Model creates steering vectors for each user
+    # Channel Model - Create steering vectors for each user
     # These represent how signals from each direction arrive at the array
     angles_of_arrival = np.arctan2(user_positions[:, 1], user_positions[:, 0])
     antenna_indices = np.arange(num_antennas)
@@ -85,7 +85,7 @@ def generate_simulation_data(num_antennas, num_users, snr_db, num_symbols):
 
 
 def generate_training_data(num_antennas, num_users, snr_range_db, 
-                          num_symbols_per_snr, num_realizations=10):
+                          num_symbols_per_snr, num_realisations=10):
     """
     Generate comprehensive training dataset across multiple SNR levels.
     
@@ -96,10 +96,10 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
     
     Args:
         num_antennas: Number of antennas
-        num_users: Number of users per realization
+        num_users: Number of users per realisation
         snr_range_db: Array of SNR values to sample from (e.g., [-10, -5, 0, 5, 10])
         num_symbols_per_snr: Symbols to generate per SNR point
-        num_realizations: Number of different channel realisations per SNR
+        num_realisations: Number of different channel realisations per SNR
         
     Returns:
         X_train: Input features (real and imag parts of received signal)
@@ -111,7 +111,7 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
     print(f"Generating training data across {len(snr_range_db)} SNR points...")
     
     for snr_db in snr_range_db:
-        for realization in range(num_realizations):
+        for realisation in range(num_realisations):
             # Generate a new channel realisation (different user positions)
             sim_data = generate_simulation_data(
                 num_antennas, num_users, snr_db, num_symbols_per_snr
