@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from simulation_fixed import generate_simulation_data, generate_training_data
-from models_fixed import mvdr_beamformer, create_dl_model, prepare_dl_data
+from simulation import generate_simulation_data, generate_training_data
+from models import mvdr_beamformer, create_dl_model, prepare_dl_data
 from plotting import plot_constellation, plot_beam_pattern
 from evaluate import calculate_ber, calculate_sinr
 from tqdm import tqdm  # Progress bars!
