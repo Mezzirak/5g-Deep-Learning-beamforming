@@ -56,6 +56,22 @@ The core idea is to frame beamforming as a **supervised learning problem**:
 
 The DNN learns to approximate the ideal function that performs this mapping. Through **training**, the model is shown thousands of examples and iteratively adjusts its internal parameters to minimise the error between its predictions and the true symbols. This data-driven approach allows the model to potentially learn to mitigate impairments that are difficult to model analytically, offering a powerful alternative to classical methods
 
+### Model architecture
+
+The deep learning beamformer is implemented as a fully connected Deep Neural Network (DNN) using TensorFlow/Keras. Unlike Convolutional Neural Networks (CNNs) often used for image processing, a dense architecture was chosen because the spatial information in beamforming is encoded in the phase relationships between antennas, not in local pixel correlations.
+
+#### Handling complex numbers
+
+Neural networks traditionally require real-valued inputs. To process complex-valued wireless signals $([Re(y), Im(y)]$), ths system performs a pre-processing step where the real and imaginary components are split and concatenated:
+
+* **Input Layer:** The complex signal vector of size N (number of antennas) is transformed into a real-valued vector of size $N$ (number of antennas) is transformed into a real-valued vector of size $2N$ (represented as $[Re(y), Im(y)]$)
+
+* **Output layer:** The network predicts the real and imaginary parts of the transmitted symbol separately, which are recombined to form the final estimated complex symbol.
+
+#### Network topolgy
+
+The model consists of an input layer, three hidden layers, and an output layer. It utilises batch normalisation and dropout to ensure training stability and prevent overfitting to specific channel realisations
+
 ### Performance Metric: Bit Error Rate (BER)
 
 **Bit Error Rate (BER)** is a fundamental performance metric in digital communications that measures the frequency of errors in a data transmission. It is defined as the ratio of the number of bits that are incorrectly received to the total number of bits transmitted
