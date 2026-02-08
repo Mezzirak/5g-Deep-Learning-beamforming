@@ -61,11 +61,14 @@ def create_dl_model(num_antennas, learning_rate=0.001, dropout_rate=0.2):
     Creates the deep learning model for beamforming.
     
     The network learns to map:
-        Input: Received signal (Real + Imaginary parts)
+        Input: Received signal + Steering vector (Real + Imaginary parts for both)
         Output: Transmitted symbol of desired user
+    
+    Input now includes steering vector
+    16 antennas * 4 (received_real, received_imag, steering_real, steering_imag) = 64 features
     """
-    # Calculate input shape: 16 antennas * 2 (Real/Imag) = 32 features
-    input_dim = num_antennas * 2
+    # Calculate input shape: MUST include steering vector
+    input_dim = num_antennas * 4  # CHANGED FROM * 2 TO * 4
     
     model = Sequential([
         # Input layer
@@ -96,19 +99,41 @@ def create_dl_model(num_antennas, learning_rate=0.001, dropout_rate=0.2):
     return model
 
 
-def prepare_dl_data(received_signal, transmitted_symbols, desired_user_idx):
+def prepare_dl_data(received_signal, transmitted_symbols, channel_vectors, desired_user_idx):
     """
-    Prepares data for training/testing the DL model.
+    Prepares data for training/testing the DL model WITH steering vector.
     
-    Converts complex-valued signals to real-valued format.
-    Returns X with shape (samples, 32).
+    include the steering vector so the model knows
+    which direction to look for the desired user!
+    
+    Args:
+        received_signal: (num_antennas x num_symbols) complex array
+        transmitted_symbols: (num_users x num_symbols) complex array
+        channel_vectors: (num_users x num_antennas) complex array - ADDED!
+        desired_user_idx: Which user's symbols to predict
+    
+    Returns:
+        X: Input features (num_symbols x 4*num_antennas) - includes steering vector
+        Y: Target labels (num_symbols x 2)
     """
     # Convert received signal from (antennas x symbols) to (symbols x antennas)
-    X_complex = received_signal.T
+    X_received = received_signal.T
     
-    # Split into real and imaginary, then concatenate horizontally
-    # Shape becomes: (num_symbols, 2*num_antennas)
-    X = np.hstack([np.real(X_complex), np.imag(X_complex)])
+    # Get the steering vector for the desired user
+    steering_vector = channel_vectors[desired_user_idx, :]
+    
+    # Tile the steering vector to match each symbol (repeat for all symbols)
+    num_symbols = X_received.shape[0]
+    X_steering = np.tile(steering_vector, (num_symbols, 1))
+    
+    # Concatenate: [received_real, received_imag, steering_real, steering_imag]
+    # This gives the model both the mixed signal and which direction to look!
+    X = np.hstack([
+        np.real(X_received),    # 16 values (received signal real part)
+        np.imag(X_received),    # 16 values (received signal imaginary part)
+        np.real(X_steering),    # 16 values (steering vector real part)
+        np.imag(X_steering)     # 16 values (steering vector imaginary part)
+    ])  # Total: 64 values
     
     # Extract the desired user's symbols if provided (for training)
     if transmitted_symbols is not None:
@@ -116,5 +141,5 @@ def prepare_dl_data(received_signal, transmitted_symbols, desired_user_idx):
         Y = np.column_stack([np.real(Y_complex), np.imag(Y_complex)])
         return X, Y
     else:
-        # For inference where we might not have labels (though in this sim we do)
+        # For inference where we might not have labels
         return X, None
