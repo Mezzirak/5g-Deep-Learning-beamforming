@@ -10,7 +10,7 @@ import tensorflow as tf
 
 try:
     tf.config.set_visible_devices([], 'GPU')
-    print("ℹ️  GPU Disabled. Running on CPU for maximum speed.", flush=True)
+    print("ℹ️  GPU disabled. Running on CPU", flush=True)
 except:
     pass
 
@@ -44,9 +44,7 @@ print(f"  - Batch Size: {BATCH_SIZE}")
 
 #Generate the training data
 
-print("\n" + "="*80)
-print("PHASE 1: Generating Training Data")
-print("="*80)
+print("Generating training data")
 
 X_train, Y_train = generate_training_data(
     num_antennas=NUM_ANTENNAS,
@@ -62,9 +60,7 @@ print(f"Output shape: {Y_train.shape}")
 
 #Train the DL model
 
-print("\n" + "="*80)
-print("PHASE 2: Training Deep Learning Model")
-print("="*80)
+print(" Training Deep Learning Model")
 
 dl_model = create_dl_model(
     num_antennas=NUM_ANTENNAS,
@@ -72,10 +68,10 @@ dl_model = create_dl_model(
     dropout_rate=DROPOUT_RATE
 )
 
-print("\nModel Architecture:")
+print("\nModel architecture:")
 dl_model.summary()
 
-print("\nTraining model (this may take a few minutes)...")
+print("\nTraining model")
 history = dl_model.fit(
     X_train, Y_train,
     epochs=EPOCHS,
@@ -105,9 +101,7 @@ print("\n✓ Training complete! Saved history to images/training_history.png")
 
 #Evaluate model
 
-print("\n" + "="*80)
-print("PHASE 3: Evaluating on test data")
-print("="*80)
+print("Evaluating on test data")
 
 mvdr_ber_results = []
 dl_ber_results = []
@@ -171,13 +165,11 @@ for snr_db in tqdm(TEST_SNR_RANGE, desc="Testing SNR points", unit="SNR"):
     
     tqdm.write(f"  SNR={snr_db:3d} dB | MVDR BER: {mvdr_ber:.6f} | DL BER: {dl_ber:.6f}")
 
-print("\n✓ Testing complete!")
+print("\n✓ Testing complete")
 
 #save and plot results
 
-print("\n" + "="*80)
-print("PHASE 4: Generating Plots")
-print("="*80)
+print("Generating Plots")
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
@@ -201,4 +193,3 @@ print("✓ Saved plot to images/ber_vs_snr_comparison_final.png")
 
 np.savez('results.npz', snr=TEST_SNR_RANGE, mvdr=mvdr_ber_results, dl=dl_ber_results)
 print("✓ Saved numerical results to results.npz")
-print("\n🎉 EXPERIMENT COMPLETE")
