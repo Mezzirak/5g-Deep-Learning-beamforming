@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 def generate_simulation_data(num_antennas, num_users, snr_db, num_symbols):
     """
-    Generates simulation data for a 5G multi-user environment.
+    Generates simulation data for a 5G multi-user environment
     """
     # Geometry Setup - Place base station at origin
     gNB_position = np.array([0, 0])
@@ -64,12 +64,17 @@ def generate_simulation_data(num_antennas, num_users, snr_db, num_symbols):
 def generate_training_data(num_antennas, num_users, snr_range_db, 
                           num_symbols_per_snr, num_realisations=10):
     """
-    Generate comprehensive training dataset across multiple SNR levels.
+    Generate comprehensive training dataset across multiple SNR levels
+    
+    Now includes steering vectors in the input data
     """
+    # Import the prepare function from models
+    from models import prepare_dl_data
+    
     X_list = []
     Y_list = []
     
-    print(f"Generating training data across {len(snr_range_db)} SNR points...")
+    print(f"Generating training data across {len(snr_range_db)} SNR points")
     
     for snr_db in tqdm(snr_range_db, desc="Generating Data", unit="SNR"):
         for realisation in range(num_realisations):
@@ -78,21 +83,13 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
                 num_antennas, num_users, snr_db, num_symbols_per_snr
             )
             
-            # Extract data
-            received_signal = sim_data["received_signal"]
-            desired_symbols = sim_data["transmitted_symbols"][
-                sim_data["desired_user_idx"], :
-            ]
-            
-            # --- THE FIX IS HERE ---
-            # Ensure we only take Real and Imag parts of the signal.
-            # Dimensions: (Symbols x 16) -> (Symbols x 32)
-            X_complex = received_signal.T 
-            X_real = np.hstack([np.real(X_complex), np.imag(X_complex)])
-            
-            # Prepare targets
-            Y_complex = desired_symbols
-            Y_real = np.column_stack([np.real(Y_complex), np.imag(Y_complex)])
+            # Use the FIXED prepare_dl_data that includes steering vectors
+            X_real, Y_real = prepare_dl_data(
+                received_signal=sim_data["received_signal"],
+                transmitted_symbols=sim_data["transmitted_symbols"],
+                channel_vectors=sim_data["channel_vectors"],  # ADDED!
+                desired_user_idx=sim_data["desired_user_idx"]
+            )
             
             X_list.append(X_real)
             Y_list.append(Y_real)
@@ -107,5 +104,6 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
     Y_train = Y_train[shuffle_idx]
     
     print(f"Training data generated: {len(X_train)} samples")
+    print(f"✓ Input shape: {X_train.shape} (should be (N, 64) with steering vectors)")
     
     return X_train, Y_train
