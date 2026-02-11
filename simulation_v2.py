@@ -114,7 +114,7 @@ def generate_training_data(num_antennas, num_users, snr_range_db,
         Y_train: Target labels (real and imag parts of desired symbol)
     """
     # Import here to avoid circular dependency
-    from models_enhanced import prepare_dl_data
+    from models_v2 import prepare_dl_data
     
     X_list = []
     Y_list = []
